@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.database import engine, Base
-from app.routers import location, category, recommendation, location_category_reviewed
+from app.routers import location, category, location_category_reviewed
 
 # base_path
 Base.metadata.create_all(bind=engine)
@@ -12,7 +12,6 @@ app = FastAPI(root_path="/api/v1")
 
 app.include_router(location.router)
 app.include_router(category.router)
-app.include_router(recommendation.router)
 app.include_router(location_category_reviewed.router)
 
 
