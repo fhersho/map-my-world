@@ -35,12 +35,6 @@ source env/bin/activate  # En Windows usa `env\Scripts\activate`
 pip install -r requirements.txt
 ```
 
-4. Instala `flake8` para evaluar el código:
-
-```bash
-pip install flake8
-```
-
 ## Ejecución
 
 1. Inicia el servidor:
