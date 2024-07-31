@@ -6,7 +6,7 @@ from pydantic import BaseModel
 class LocationCategoryReviewedBase(BaseModel):
     location_id: int
     category_id: int
-    last_reviewed: datetime
+    reviewed_at: datetime | None = None
 
 
 class LocationCategoryReviewedCreate(LocationCategoryReviewedBase):

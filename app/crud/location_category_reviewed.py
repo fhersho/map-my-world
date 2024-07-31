@@ -2,22 +2,29 @@ from datetime import datetime, timedelta
 
 from sqlalchemy.orm import Session
 
-from app.models.location_category_reviewed import LocationCategoryReviewed
-from app.schemas.location_category_reviewed import LocationCategoryReviewedCreate
+from . import models, schemas
 
 
-def get_location_category_reviewed(db: Session, reviewed_id: int):
-    return db.query(LocationCategoryReviewed).filter(LocationCategoryReviewed.id == reviewed_id).first()
-
-
-def get_reviewed_combinations(db: Session, days: int = 30):
-    threshold_date = datetime.utcnow() - timedelta(days=days)
-    return db.query(LocationCategoryReviewed).filter(LocationCategoryReviewed.last_reviewed < threshold_date).all()
-
-
-def create_reviewed_combination(db: Session, reviewed: LocationCategoryReviewedCreate):
-    db_reviewed = LocationCategoryReviewed(**reviewed.dict())
-    db.add(db_reviewed)
+def create_location_category_reviewed(db: Session, review: schemas.LocationCategoryReviewedCreate):
+    db_review = models.LocationCategoryReviewed(**review.dict())
+    db.add(db_review)
     db.commit()
-    db.refresh(db_reviewed)
-    return db_reviewed
+    db.refresh(db_review)
+    return db_review
+
+
+def get_location_category_reviewed(db: Session, review_id: int):
+    return db.query(models.LocationCategoryReviewed).filter(models.LocationCategoryReviewed.id == review_id).first()
+
+
+def get_location_category_reviews(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.LocationCategoryReviewed).offset(skip).limit(limit).all()
+
+
+def get_recommendations(db: Session, days: int = 30, limit: int = 10):
+    threshold_date = datetime.utcnow() - timedelta(days=days)
+    reviews = db.query(models.LocationCategoryReviewed) \
+        .filter(models.LocationCategoryReviewed.reviewed_at < threshold_date) \
+        .order_by(models.LocationCategoryReviewed.reviewed_at.asc()) \
+        .limit(limit).all()
+    return reviews
